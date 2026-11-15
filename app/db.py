@@ -1,7 +1,9 @@
 import json
 import os
+import re
 import sqlite3
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -11,13 +13,21 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def connect() -> sqlite3.Connection:
+@contextmanager
+def connect():
     path = Path(os.getenv("DATABASE_PATH", "data/kolobok.db"))
     path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(path, check_same_thread=False)
-    db.row_factory = sqlite3.Row
-    db.execute("PRAGMA foreign_keys = ON")
-    return db
+    connection = sqlite3.connect(path, check_same_thread=False)
+    connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
+    try:
+        yield connection
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
 
 
 def init_db() -> None:
@@ -119,9 +129,15 @@ def get_messages(conversation_id: str) -> list[dict[str, Any]]:
 
 
 def create_node(data: dict[str, Any]) -> dict[str, Any]:
-    nid, stamp = str(uuid.uuid4()), now_iso()
+    stamp = now_iso()
+    day = stamp[:10].replace("-", "")
+    slug = re.sub(r"[^a-z0-9]+", "-", data["name"].lower()).strip("-")[:32] or "knowledge"
     tags = json.dumps(data.get("tags", []), ensure_ascii=False)
     with connect() as db:
+        sequence = db.execute(
+            "SELECT COUNT(*) AS total FROM nodes WHERE created_at LIKE ?", (stamp[:10] + "%",)
+        ).fetchone()["total"] + 1
+        nid = f"KN-{slug}-{day}-{sequence:04d}"
         db.execute("""INSERT INTO nodes
             (id,name,node_type,content,tags,importance,quality,context_required,source,created_at,updated_at)
             VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
