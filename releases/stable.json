@@ -1,0 +1,5 @@
+{
+  "channel":"stable",
+  "latest":"1.0.0",
+  "releases":[{"version":"1.0.0","platform":"W","architecture":"x64","installer_language":"Russian","path":"1.0.0/W/Russian/","minimum_os":"Windows 10","status":"prototype"}]
+}
