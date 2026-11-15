@@ -1,0 +1,7 @@
+{
+  "product":"Kolobok","project":"LabokUS","version":"1.1.0","platform":"W","architecture":"x64",
+  "human_language":"ru","programming_language_pack":"all",
+  "programming_languages":["Python","Java","JavaScript","TypeScript","C","C++","C#","Kotlin","Go","HTML","CSS","SQL","PowerShell","Bash"],
+  "optional_programming_languages":["PHP"],"minimum_os":"Windows 10 x64","entrypoint":"run.bat",
+  "installer":"install.bat","update_policy":"manual-confirmation-only","status":"prototype"
+}
