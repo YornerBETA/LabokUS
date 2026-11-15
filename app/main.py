@@ -11,12 +11,14 @@ from pydantic import BaseModel, Field
 
 from . import db
 from .providers import ProviderError, generate_reply, provider_config
+from .mcp_server import mcp, mcp_http_app
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     db.init_db()
-    yield
+    async with mcp.session_manager.run():
+        yield
 
 
 app = FastAPI(title="Kolobok / LabokUS", version="0.1.0", lifespan=lifespan)
@@ -207,3 +209,7 @@ async def agent_event(body: EventBody, x_agent_token: str | None = Header(defaul
     if not expected or not x_agent_token or not secrets.compare_digest(x_agent_token, expected):
         raise HTTPException(status_code=403, detail="Local agent token is not configured or invalid")
     return db.save_event(body.source, body.event_type, body.summary, body.metadata)
+
+
+# Keep the MCP mount last so existing REST routes retain priority.
+app.mount("/", mcp_http_app)
