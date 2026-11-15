@@ -1,5 +1,4 @@
 {
-  "channel":"stable",
-  "latest":"1.0.0",
-  "releases":[{"version":"1.0.0","platform":"W","architecture":"x64","installer_language":"Russian","path":"1.0.0/W/Russian/","minimum_os":"Windows 10","status":"prototype"}]
+  "product":"Kolobok","channel":"stable","latest":"1.1.0","release_tag":"v1.1.0",
+  "supported_builds":[{"version":"1.1.0","platform":"W","architecture":"x64","human_language":"ru","programming_language_pack":"all","asset":"LabokUS-1.1.0-W-x64-ru-all.zip","status":"source-package-available; GitHub release asset not yet published"}]
 }
