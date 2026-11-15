@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -49,7 +49,7 @@ class NodeBody(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     node_type: str = "note"
     content: str = ""
-    tags: list[str] = []
+    tags: list[str] = Field(default_factory=list)
     importance: str = "ordinary"
     quality: float | None = None
     context_required: bool = False
@@ -71,7 +71,7 @@ class EventBody(BaseModel):
     source: str = Field(min_length=1, max_length=80)
     event_type: str = Field(min_length=1, max_length=80)
     summary: str = Field(min_length=1, max_length=2000)
-    metadata: dict[str, Any] = {}
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 @app.get("/")
@@ -103,6 +103,7 @@ async def status(authorization: str | None = Header(default=None)):
         "version": app.version,
         "provider": cfg["provider"],
         "model_configured": bool(cfg["api_key"] and cfg["model"]),
+        "model": cfg["model"] or None,
         "graph": "sqlite",
         "desktop_agent": "not_connected",
     }
