@@ -1,0 +1,6 @@
+{
+  "product":"Kolobok","project":"LabokUS","version":"1.0.0",
+  "platform":"W","installer_language":"Russian","architecture":["x64"],
+  "minimum_os":"Windows 10","entrypoint":"run.bat","installer_builder":"install.bat",
+  "status":"prototype"
+}
