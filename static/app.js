@@ -78,7 +78,7 @@ async function loadNodes() {
 async function loadStatus() {
   try {
     const s = await api("/api/status");
-    $("provider-label").textContent = s.model_configured ? s.provider + " · " + s.model_configured : "Модель не настроена";
+    $("provider-label").textContent = s.model_configured ? s.provider + " · " + s.model : "Модель не настроена";
     const entries = [
       ["API-сервер","Работает","FastAPI"],
       ["AI-провайдер",s.model_configured ? "Настроен" : "Не настроен",s.provider],
