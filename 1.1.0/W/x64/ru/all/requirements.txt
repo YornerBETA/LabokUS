@@ -1,0 +1,2 @@
+# Python standard library + Tkinter desktop core
+pyttsx3>=2.90,<3.0
